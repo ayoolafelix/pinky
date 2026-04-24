@@ -1,0 +1,33 @@
+{
+  "name": "netflow",
+  "version": "1.0.0",
+  "description": "Private LP Treasury OS for Meteora Liquidity Providers",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@cloak.dev/sdk": "^0.1.0",
+    "@mercurial-finance/dynamic-amm-sdk": "^1.1.23",
+    "@meteora-ag/dlmm-sdk": "^0.7.7",
+    "@solana/web3.js": "^1.95.8",
+    "framer-motion": "^11.18.2",
+    "lucide-react": "^0.474.0",
+    "next": "^15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recharts": "^2.15.0",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "eslint": "^9.19.0",
+    "eslint-config-next": "^15.1.6",
+    "typescript": "^5.7.3"
+  }
+}
