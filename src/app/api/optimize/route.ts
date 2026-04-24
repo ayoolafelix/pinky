@@ -4,7 +4,7 @@ import { LPPosition } from '@/types';
 
 export async function GET() {
   return NextResponse.json({
-    description: 'NetFlow Optimization API - Generate execution plans from LP positions',
+    description: 'Pinky Optimization API - Generate execution plans from LP positions',
     endpoints: {
       POST: {
         description: 'Generate execution plan from positions',

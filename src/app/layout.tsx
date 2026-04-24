@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
-  title: 'NetFlow | Private LP Treasury OS',
+  title: 'Pinky | Private LP Treasury OS',
   description: 'Private LP Treasury OS for Meteora Liquidity Providers - Track, optimize, and rebalance LP positions with privacy',
 };
 

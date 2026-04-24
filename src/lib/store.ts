@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Portfolio, ExecutionPlan, ExecutionHistory, ExecutionStep } from '../types';
 
-interface NetFlowState {
+interface PinkyState {
   walletConnected: boolean;
   walletAddress: string | null;
   portfolio: Portfolio | null;
@@ -22,7 +22,7 @@ interface NetFlowState {
   reset: () => void;
 }
 
-export const useNetFlowStore = create<NetFlowState>((set) => ({
+export const usePinkyStore = create<PinkyState>((set) => ({
   walletConnected: false,
   walletAddress: null,
   portfolio: null,

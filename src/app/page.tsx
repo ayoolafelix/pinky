@@ -1,9 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useNetFlowStore } from '@/lib/store';
-import { lpAgent } from '@/services/lpAgent';
-import { optimizerEngine, OptimizationParams } from '@/services/optimizer';
+import { usePinkyStore } from '@/lib/store';
 import Header from '@/components/Header';
 import PortfolioCard from '@/components/PortfolioCard';
 import PositionsTable from '@/components/PositionsTable';
@@ -71,8 +69,8 @@ const DEMO_POSITIONS = [
 ];
 
 export default function Home() {
-  const { walletConnected, walletAddress, portfolio, isLoading, setPortfolio, setLoading, setError } = useNetFlowStore();
-  const [showWelcome, setShowWelcome] = useState(!walletConnected);
+  const { walletConnected, walletAddress, portfolio, isLoading, setPortfolio, setLoading, setError } = usePinkyStore();
+  const [showWelcome, setShowWelcome] = useState(true);
   const [demoMode, setDemoMode] = useState(false);
 
   const loadPortfolio = useCallback(async () => {
@@ -82,24 +80,18 @@ export default function Home() {
     setError(null);
 
     try {
-      let portfolioData;
+      const positions = DEMO_POSITIONS;
+      const totalValue = positions.reduce((sum, p) => sum + p.amountX + p.amountY, 0);
+      const totalPnL = positions.reduce((sum, p) => sum + p.pnl, 0);
       
-      if (demoMode) {
-        const positions = DEMO_POSITIONS;
-        const totalValue = positions.reduce((sum, p) => sum + p.amountX + p.amountY, 0);
-        const totalPnL = positions.reduce((sum, p) => sum + p.pnl, 0);
-        
-        portfolioData = {
-          positions,
-          totalValue,
-          totalPnL,
-          totalPnLPercent: (totalPnL / totalValue) * 100,
-          yield24h: positions.reduce((sum, p) => sum + p.feesEarned, 0),
-          yieldAPY: positions.reduce((sum, p) => sum + p.apr * (p.amountX + p.amountY), 0) / totalValue,
-        };
-      } else {
-        portfolioData = await lpAgent.calculatePnL(walletAddress!);
-      }
+      const portfolioData = {
+        positions,
+        totalValue,
+        totalPnL,
+        totalPnLPercent: (totalPnL / totalValue) * 100,
+        yield24h: positions.reduce((sum, p) => sum + p.feesEarned, 0),
+        yieldAPY: positions.reduce((sum, p) => sum + p.apr * (p.amountX + p.amountY), 0) / totalValue,
+      };
 
       setPortfolio(portfolioData);
     } catch (err) {
@@ -114,12 +106,6 @@ export default function Home() {
       loadPortfolio();
     }
   }, [walletConnected, demoMode, loadPortfolio]);
-
-  useEffect(() => {
-    if (!walletConnected && !demoMode) {
-      setShowWelcome(true);
-    }
-  }, [walletConnected, demoMode]);
 
   const handleConnectDemo = () => {
     setDemoMode(true);
@@ -177,7 +163,7 @@ export default function Home() {
                   No Portfolio Connected
                 </h1>
                 <p style={{ color: 'var(--text-secondary)', marginBottom: '32px', maxWidth: '400px' }}>
-                  Connect your wallet or use demo mode to see how NetFlow optimizes your LP positions with privacy.
+                  Connect your wallet or use demo mode to see how Pinky optimizes your LP positions with privacy.
                 </p>
                 <button className="btn btn-primary" onClick={handleConnectDemo}>
                   Try Demo Mode

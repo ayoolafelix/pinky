@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   return NextResponse.json({
-    description: 'NetFlow Cloak API - Private execution layer',
+    description: 'Pinky Cloak API - Private execution layer',
     endpoints: {
       POST: {
         shield: 'Deposit funds into Cloak UTXO system',

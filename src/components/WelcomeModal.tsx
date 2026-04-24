@@ -78,7 +78,7 @@ export default function WelcomeModal({ isOpen, onClose, onDemo }: WelcomeModalPr
           textAlign: 'center',
           marginBottom: '8px',
         }}>
-          NetFlow
+          Pinky
         </h2>
         <p style={{
           fontSize: '14px',

@@ -1,4 +1,4 @@
-# NetFlow - Private LP Treasury OS
+# Pinky - Private LP Treasury OS
 
 <p align="center">
   <strong>Private LP Treasury OS for Meteora Liquidity Providers</strong>

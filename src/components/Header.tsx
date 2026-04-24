@@ -1,11 +1,11 @@
-import { useNetFlowStore } from '@/lib/store';
+import { usePinkyStore } from '@/lib/store';
 
 interface HeaderProps {
   onDemoMode: boolean;
 }
 
 export default function Header({ onDemoMode }: HeaderProps) {
-  const { walletAddress, reset } = useNetFlowStore();
+  const { walletAddress, reset } = usePinkyStore();
 
   return (
     <header style={{
@@ -41,7 +41,7 @@ export default function Header({ onDemoMode }: HeaderProps) {
             N
           </div>
           <div>
-            <h1 style={{ fontSize: '18px', fontWeight: 700 }}>NetFlow</h1>
+            <h1 style={{ fontSize: '18px', fontWeight: 700 }}>Pinky</h1>
             <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Private LP Treasury OS</span>
           </div>
         </div>

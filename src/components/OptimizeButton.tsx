@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useNetFlowStore } from '@/lib/store';
+import { usePinkyStore } from '@/lib/store';
 import { optimizerEngine } from '@/services/optimizer';
 import { Portfolio, ExecutionPlan } from '@/types';
 import { Zap, ArrowRight, CheckCircle, XCircle, Loader } from 'lucide-react';
@@ -13,7 +13,7 @@ interface OptimizeButtonProps {
 }
 
 export default function OptimizeButton({ portfolio, onOptimize, demoMode }: OptimizeButtonProps) {
-  const { executionPlan, setExecutionPlan, isExecuting, setExecuting, setError } = useNetFlowStore();
+  const { executionPlan, setExecutionPlan, isExecuting, setExecuting, setError } = usePinkyStore();
   const [showPlan, setShowPlan] = useState(false);
   const [plan, setPlan] = useState<ExecutionPlan | null>(null);
 

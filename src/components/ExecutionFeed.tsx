@@ -1,10 +1,9 @@
 'use client';
 
-import { useNetFlowStore } from '@/lib/store';
-import { Activity, CheckCircle, XCircle, Loader } from 'lucide-react';
+import { usePinkyStore } from '@/lib/store';
 
 export default function ExecutionFeed() {
-  const { executionPlan, executionHistory } = useNetFlowStore();
+  const { executionPlan, executionHistory } = usePinkyStore();
 
   const formatTime = (timestamp: number) => {
     return new Date(timestamp).toLocaleTimeString('en-US', {
