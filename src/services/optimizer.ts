@@ -84,24 +84,34 @@ class OptimizerEngine {
       let action: 'zap_in' | 'zap_out' | 'hold' = 'hold';
       let reason = '';
       let expectedYieldChange = 0;
+      let priority: 'high' | 'medium' | 'low' = 'medium';
+      let riskScore = 50;
 
       if (score.score < avgScore - 5 && currentAllocation > 10) {
         recommendedAllocation = currentAllocation * 0.7;
         action = 'zap_out';
         reason = 'Underperforming pool - reallocate to higher yield opportunities';
         expectedYieldChange = (score.score - avgScore) * 0.1;
+        priority = 'high';
+        riskScore = 75;
       } else if (score.score > avgScore + 10 && normalizedScore > 0.7) {
         recommendedAllocation = currentAllocation * 1.3;
         action = 'zap_in';
         reason = 'Highperforming pool - increase exposure';
         expectedYieldChange = (score.score - avgScore) * 0.15;
+        priority = 'medium';
+        riskScore = 30;
       } else if (pos.apr < minYieldThreshold) {
         action = 'zap_out';
         reason = `APR (${pos.apr.toFixed(2)}%) below minimum threshold`;
         recommendedAllocation = currentAllocation * 0.5;
         expectedYieldChange = pos.apr * 0.2;
+        priority = 'high';
+        riskScore = 80;
       } else {
         reason = 'Optimal allocation maintained';
+        priority = 'low';
+        riskScore = 20;
       }
 
       return {
@@ -111,6 +121,9 @@ class OptimizerEngine {
         expectedYieldChange,
         reason,
         action,
+        priority,
+        riskScore,
+        confidence: Math.min(95, Math.max(60, 100 - Math.abs(normalizedScore - 0.5) * 100)),
       };
     });
   }
@@ -174,6 +187,8 @@ class OptimizerEngine {
       totalValueAfter: valueAfter,
       expectedYieldBefore: yieldBefore,
       expectedYieldAfter: yieldAfter,
+      riskScoreBefore: 50,
+      riskScoreAfter: 40,
       steps,
     };
   }

@@ -1,17 +1,21 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { Portfolio, ExecutionPlan, ExecutionHistory, ExecutionStep } from '../types';
 
 interface PinkyState {
   walletConnected: boolean;
   walletAddress: string | null;
+  demoMode: boolean;
   portfolio: Portfolio | null;
   executionPlan: ExecutionPlan | null;
   executionHistory: ExecutionHistory[];
   isLoading: boolean;
   isExecuting: boolean;
   error: string | null;
+  viewMode: 'dashboard' | 'treasury' | 'analytics' | 'settings';
 
   setWalletConnected: (connected: boolean, address?: string) => void;
+  setDemoMode: (demo: boolean) => void;
   setPortfolio: (portfolio: Portfolio) => void;
   setExecutionPlan: (plan: ExecutionPlan | null) => void;
   addExecutionHistory: (history: ExecutionHistory) => void;
@@ -19,55 +23,73 @@ interface PinkyState {
   setLoading: (loading: boolean) => void;
   setExecuting: (executing: boolean) => void;
   setError: (error: string | null) => void;
+  setViewMode: (mode: 'dashboard' | 'treasury' | 'analytics' | 'settings') => void;
   reset: () => void;
 }
 
-export const usePinkyStore = create<PinkyState>((set) => ({
+const initialState = {
   walletConnected: false,
   walletAddress: null,
+  demoMode: false,
   portfolio: null,
   executionPlan: null,
   executionHistory: [],
   isLoading: false,
   isExecuting: false,
   error: null,
+  viewMode: 'dashboard' as const,
+};
 
-  setWalletConnected: (connected, address) =>
-    set({ walletConnected: connected, walletAddress: address || null }),
+export const usePinkyStore = create<PinkyState>()(
+  persist(
+    (set) => ({
+      ...initialState,
 
-  setPortfolio: (portfolio) => set({ portfolio }),
+      setWalletConnected: (connected, address) =>
+        set({ 
+          walletConnected: connected, 
+          walletAddress: address || null,
+          demoMode: false,
+        }),
 
-  setExecutionPlan: (plan) => set({ executionPlan: plan }),
+      setDemoMode: (demo) =>
+        set({ demoMode: demo, walletConnected: false, walletAddress: null }),
 
-  addExecutionHistory: (history) =>
-    set((state) => ({
-      executionHistory: [history, ...state.executionHistory].slice(0, 50),
-    })),
+      setPortfolio: (portfolio) => set({ portfolio }),
 
-  addStepExecutionResult: (stepId, result) =>
-    set((state) => {
-      if (!state.executionPlan) return state;
-      const steps = state.executionPlan.steps.map((step) =>
-        step.id === stepId ? { ...step, ...result } : step
-      );
-      return { executionPlan: { ...state.executionPlan, steps } };
+      setExecutionPlan: (plan) => set({ executionPlan: plan }),
+
+      addExecutionHistory: (history) =>
+        set((state) => ({
+          executionHistory: [history, ...state.executionHistory].slice(0, 50),
+        })),
+
+      addStepExecutionResult: (stepId, result) =>
+        set((state) => {
+          if (!state.executionPlan) return state;
+          const steps = state.executionPlan.steps.map((step) =>
+            step.id === stepId ? { ...step, ...result } : step
+          );
+          return { executionPlan: { ...state.executionPlan, steps } };
+        }),
+
+      setLoading: (loading) => set({ isLoading: loading }),
+
+      setExecuting: (executing) => set({ isExecuting: executing }),
+
+      setError: (error) => set({ error }),
+
+      setViewMode: (mode) => set({ viewMode: mode }),
+
+      reset: () => set(initialState),
     }),
-
-  setLoading: (loading) => set({ isLoading: loading }),
-
-  setExecuting: (executing) => set({ isExecuting: executing }),
-
-  setError: (error) => set({ error }),
-
-  reset: () =>
-    set({
-      walletConnected: false,
-      walletAddress: null,
-      portfolio: null,
-      executionPlan: null,
-      executionHistory: [],
-      isLoading: false,
-      isExecuting: false,
-      error: null,
-    }),
-}));
+    {
+      name: 'pinky-storage',
+      partialize: (state) => ({
+        walletAddress: state.walletAddress,
+        demoMode: state.demoMode,
+        viewMode: state.viewMode,
+      }),
+    }
+  )
+);

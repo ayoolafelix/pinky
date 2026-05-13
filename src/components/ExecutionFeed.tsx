@@ -1,6 +1,7 @@
 'use client';
 
 import { usePinkyStore } from '@/lib/store';
+import { Activity, CheckCircle, XCircle, Loader } from 'lucide-react';
 
 export default function ExecutionFeed() {
   const { executionPlan, executionHistory } = usePinkyStore();

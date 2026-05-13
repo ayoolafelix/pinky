@@ -1,83 +1,96 @@
+'use client';
+
 import { usePinkyStore } from '@/lib/store';
+import WalletButton from '@/components/ui/WalletButton';
+import { LayoutDashboard, Shield, BarChart3, Settings, Menu, X } from 'lucide-react';
+import { useState } from 'react';
 
 interface HeaderProps {
   onDemoMode: boolean;
 }
 
 export default function Header({ onDemoMode }: HeaderProps) {
-  const { walletAddress, reset } = usePinkyStore();
+  const { walletAddress, demoMode, viewMode, setViewMode, reset } = usePinkyStore();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'treasury', label: 'Treasury', icon: Shield },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'settings', label: 'Settings', icon: Settings },
+  ] as const;
 
   return (
-    <header style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      height: '72px',
-      background: 'rgba(10, 10, 15, 0.8)',
-      backdropFilter: 'blur(20px)',
-      borderBottom: '1px solid var(--border-color)',
-      zIndex: 100,
-    }}>
-      <div className="container" style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: '100%',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
-            background: 'linear-gradient(135deg, var(--accent-primary), #006644)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '20px',
-            fontWeight: 700,
-            color: '#000',
-          }}>
-            N
+    <header className="header">
+      <div className="header-content">
+        <div className="header-left">
+          <div className="logo">
+            <div className="logo-icon">P</div>
+            <div className="logo-text">
+              <span className="logo-title">Pinky</span>
+              <span className="logo-subtitle">Private LP Treasury OS</span>
+            </div>
           </div>
-          <div>
-            <h1 style={{ fontSize: '18px', fontWeight: 700 }}>Pinky</h1>
-            <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Private LP Treasury OS</span>
-          </div>
+
+          <nav className="nav-desktop">
+            {navItems.map(item => (
+              <button
+                key={item.id}
+                className={`nav-item ${viewMode === item.id ? 'active' : ''}`}
+                onClick={() => setViewMode(item.id)}
+              >
+                <item.icon size={16} />
+                {item.label}
+              </button>
+            ))}
+          </nav>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="header-right">
           {onDemoMode && (
-            <span className="badge badge-success">
-              <span style={{ marginRight: '6px' }}>●</span>
+            <div className="demo-badge">
+              <span className="demo-indicator">●</span>
               Demo Mode
-            </span>
+            </div>
           )}
-          
+
+          <WalletButton />
+
           {walletAddress && (
             <button 
-              className="btn btn-ghost"
+              className="btn btn-ghost btn-sm"
               onClick={reset}
-              style={{ fontSize: '13px', color: 'var(--text-secondary)' }}
             >
               Disconnect
             </button>
           )}
 
-          <div style={{
-            padding: '8px 16px',
-            background: 'var(--bg-tertiary)',
-            borderRadius: '8px',
-            fontSize: '13px',
-            fontFamily: 'monospace',
-            color: 'var(--text-secondary)',
-          }}>
-            {walletAddress 
-              ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` 
-              : 'Not connected'}
-          </div>
+          <button 
+            className="mobile-menu-btn"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="mobile-menu">
+          {navItems.map(item => (
+            <button
+              key={item.id}
+              className={`mobile-nav-item ${viewMode === item.id ? 'active' : ''}`}
+              onClick={() => {
+                setViewMode(item.id);
+                setMobileMenuOpen(false);
+              }}
+            >
+              <item.icon size={18} />
+              {item.label}
+            </button>
+          ))}
+        </div>
+      )}
     </header>
   );
 }
